@@ -160,6 +160,9 @@ Vue.component('con3',{
                 './img/con1-item1.jpg',
                 './img/con1-item2.jpg',
                 './img/con1-item3.jpg',
+                './img/con1-item1.jpg',
+                './img/con1-item2.jpg',
+                './img/con1-item3.jpg',
             ],
             swiperActive:0,
             pageIndex:0,
@@ -171,6 +174,7 @@ Vue.component('con3',{
         }
     },
     computed:{
+        
         contentList(){
             let dataList=[]
             const curList=[
@@ -199,19 +203,12 @@ Vue.component('con3',{
                     number:'NO********'
                 }
             ]
-            for(let i=0;i<100;i++){
+            for(let i=0;i<300;i++){
                 dataList.push(curList[i%4])
             }
             return dataList
         },
-        allPagination(){
-            let arr=[]
-            const allIndex=Math.ceil(this.contentList.length/9)
-            for(let i=1;i<=allIndex;i++){
-                arr.push(i)
-            }
-            return arr
-        }
+        
     },
     methods:{
         swiperPrev(){
@@ -228,6 +225,11 @@ Vue.component('con3',{
             const slides=this.$refs.swiperWrapper.children.length
             if(this.swiperActive>0){
                 this.swiperActive--
+                this.$refs.swiperWrapper.querySelector('.swiper-slide-active').scrollIntoView({
+                    behavior: 'smooth',
+                    inline: 'center',
+                    block:'nearest'
+                })
             }
         },
         swiperNext(){
@@ -245,21 +247,14 @@ Vue.component('con3',{
             const slides=this.$refs.swiperWrapper.children.length
             if(this.swiperActive<slides-1){
                 this.swiperActive++
+                this.$refs.swiperWrapper.querySelector('.swiper-slide-active').scrollIntoView({
+                    behavior: 'smooth',
+                    inline: 'center',
+                    block:'nearest'
+                })
             }
         },
-        clickPaginationItem(index){
-            this.pageIndex=index
-        },
-        clickPaginationPrev(){
-            if(this.pageIndex>=1){
-                this.pageIndex=this.pageIndex-1
-            }
-        },
-        clickPaginationNext(){
-            if(this.pageIndex<this.allPagination.length-1){
-                this.pageIndex=this.pageIndex+1
-            }
-        },
+        
         clickListItem(){
             this.overlayIsShow=true,
             this.ani1IsShow=true,
@@ -281,30 +276,34 @@ Vue.component('con3',{
         clickBack(){
             this.$emit('clickBack')
         },
-        initSwiper(){
-            mySwiper = new Swiper('.swiper-container', {
-                freeMode:true,
-                on: {
-                    slideChangeTransitionEnd: function(){
-                      alert(this.activeIndex);
-                    },
-                  },
+        changePageIndex(index){
+            this.pageIndex=index
+        },
+        clickSwiperSlide(index){
+            this.swiperActive=index
+            this.$nextTick(()=>{
+                this.$refs.swiperWrapper.querySelector('.swiper-slide-active').scrollIntoView({
+                    behavior: 'smooth',
+                    inline: 'center',
+                    block:'nearest'
+                })
             })
+        },
+        itemOver(e){
+            e.currentTarget.classList.add('in')
+            e.currentTarget.classList.remove('out')
+        },
+        itemOut(e){
+            e.currentTarget.classList.remove('in')
+            e.currentTarget.classList.add('out')
         }
     },
-    mounted(){
-        // this.initSwiper()
-        this.$refs.swiperWrapper.querySelector('.swiper-slide-active').scrollIntoView({
-            behavior: 'smooth',
-            inline: 'center'
-        })
-        
-    },
+    
     template: `
     <div class="con3">
         <div class="swiper-container" ref="swiper">
             <div class="swiper-wrapper" ref="swiperWrapper">
-                <div class="swiper-slide" :class="{'swiper-slide-active':swiperActive===index}" v-for="(item,index) of this.swiperImgs" :key="index">
+                <div class="swiper-slide" :class="{'swiper-slide-active':swiperActive===index}" @click="clickSwiperSlide(index)" v-for="(item,index) of this.swiperImgs" :key="index">
                     <img :src="item" alt="">
                 </div>
             </div>
@@ -318,7 +317,8 @@ Vue.component('con3',{
         <div class="con3-content">
             <div class="con3-title">Your NFT</div>
             <div class="con3-list">
-                <div class="item" v-for="(item,index) of contentList.slice((this.pageIndex*9),(this.pageIndex+1)*9)" :key="index" @click="clickListItem">
+                <div class="item" v-for="(item,index) of contentList.slice((this.pageIndex*9),(this.pageIndex+1)*9)" :key="index" @click="clickListItem"
+                @mouseover="itemOver" @mouseout="itemOut">
                     <div class="item-img">
                         <img :src="item.imgUrl" alt="">
                     </div>
@@ -330,22 +330,8 @@ Vue.component('con3',{
                 </div>
             </div>
         </div>
-        <div class="con3-pagination">
-            <div class="prev" @click="clickPaginationPrev">
-                <img src="./img/pagination-w.svg" alt="" v-if="this.pageIndex>0">
-                <img src="./img/pagination-g.svg" alt="" v-else>
-            </div>
-            <div class="item" :class="{'active':index===pageIndex}" v-for="(item,index) of allPagination" :key="index" @click="clickPaginationItem(index)">
-                <div class="num">{{item}}</div>
-            </div>
-            <div class="more" v-if="this.pageIndex<this.allPagination.length-1">
-                <img src="./img/more.svg" alt="">
-            </div>
-            <div class="next" @click="clickPaginationNext">
-                <img src="./img/pagination-w.svg" alt="" v-if="this.pageIndex<this.allPagination.length-1">
-                <img src="./img/pagination-g.svg" alt="" v-else>
-            </div>
-        </div>
+        <el-pagination :contentList='this.contentList.length' :pageIndex="pageIndex" @changePageIndex="changePageIndex"></el-pagination>
+        
         <div class="con3-overlay" v-if="overlayIsShow">
             <div class="con3-remind" v-if="this.ani1IsShow"> 
                 <div class="text">Will you burn this NFT and get a HERO?</div>
@@ -359,7 +345,8 @@ Vue.component('con3',{
                 <div class="next" @click="clickNext">NEXT</div>
             </div>
             <div class="ani4" v-if="this.ani4IsShow">
-                <img src="./img/con2-item1.png" alt="">
+                <div class="ani4-title">You got this HERO!!</div>
+                <img src="./img/con2-item1.png" alt="" class="child">
                 <img src="./img/icon1.svg" alt="" class="twitter">
                 <div class="back" @click="clickBack">Back to top</div>
             </div>
@@ -369,10 +356,99 @@ Vue.component('con3',{
     `
 })
 
-Vue.component('myHero',{
+Vue.component('el-pagination',{
+    props:['contentList','pageIndex'],
     data(){
         return{
-            heroList:[
+            // pageIndex:0,
+            paginationIndex: Math.floor(this.pageIndex/9) || 0,
+        }
+    },
+   
+    computed:{
+        allPagination(){
+            let arr=[]
+            const allIndex=Math.ceil(this.contentList/9)
+            for(let i=1;i<=allIndex;i++){
+                arr.push(i)
+            }
+            return arr
+        },
+        curPagination(){
+            let arr
+            arr=this.allPagination.slice(9*this.paginationIndex,9*(this.paginationIndex+1))
+            return arr
+        }
+    },
+    watch:{
+        pageIndex(){
+            this.$emit('changePageIndex',this.pageIndex)
+        }
+    },
+    methods:{
+        changePageIndex(){
+            if(this.pageIndex+1<this.curPagination[0]){
+                this.paginationIndex=Math.floor(this.pageIndex/9)
+            }
+            if(this.pageIndex+1>this.curPagination[this.curPagination.length-1]){
+                this.paginationIndex=Math.floor(this.pageIndex/9)
+            }
+        },
+        clickPaginationPrev(){
+            if(this.pageIndex>=1){
+                this.pageIndex--
+            }
+            this.changePageIndex()
+        },
+        clickPaginationNext(){
+            if(this.pageIndex<this.allPagination.length-1){
+                this.pageIndex++
+            }
+            this.changePageIndex()
+        },
+        clickPaginationItem(index){
+            this.pageIndex=index-1
+        },
+        showMore(){
+            if(this.paginationIndex<parseInt(this.allPagination.length/9)){
+                this.paginationIndex++
+            }
+        }
+    },
+    template:`
+    <div class="con3-pagination">
+        <div class="prev" @click="clickPaginationPrev">
+            <img src="./img/pagination-w.svg" alt="" v-if="this.pageIndex>0">
+            <img src="./img/pagination-g.svg" alt="" v-else>
+        </div>
+        <div class="item" :class="{'active':item-1===pageIndex}" v-for="(item,index) of curPagination" :key="index" @click="clickPaginationItem(item)">
+            <div class="num">{{item}}</div>
+        </div>
+        <div class="more" v-if="this.pageIndex<this.allPagination.length-1 && this.paginationIndex<parseInt(this.allPagination.length/9)" @click="showMore">
+            <img src="./img/more.svg" alt="">
+        </div>
+        <div class="next" @click="clickPaginationNext">
+            <img src="./img/pagination-w.svg" alt="" v-if="this.pageIndex<this.allPagination.length-1">
+            <img src="./img/pagination-g.svg" alt="" v-else>
+        </div>
+    </div>
+    `
+})
+
+Vue.component('myHero',{
+    props:['pageIndex'],
+    data(){
+        return{
+            
+        }
+    },
+    mounted(){
+        this.$emit('getHeroLength',this.heroList.length)
+    },
+    computed:{
+        heroList(){
+            let dataList=[]
+            const curList=[
                 {
                     imgUrl:'./img/my-img1.png',
                     itemNum:'NO********'
@@ -385,12 +461,23 @@ Vue.component('myHero',{
                     imgUrl:'./img/my-img3.png',
                     itemNum:'NO********'
                 },
-            ],
+                {
+                    imgUrl:'./img/my-img3.png',
+                    itemNum:'NO********'
+                },
+            ]
+
+            for(let i=0;i<300;i++){
+                dataList.push(curList[i%4])
+            }
+            return dataList
         }
+        
+
     },
     template: `
     <div class="hero">
-        <div class="item" v-for="(item,index) of this.heroList" :key=index>
+        <div class="item" v-for="(item,index) of this.heroList.slice((this.pageIndex*9),(this.pageIndex+1)*9)" :key=index>
             <div class="item-img">
                 <img :src="item.imgUrl" alt="">
             </div>
@@ -401,9 +488,16 @@ Vue.component('myHero',{
 })
 
 Vue.component('myBook',{
+    props:['pageIndex'],
     data(){
         return{
-            dataList:[
+            
+        }
+    },
+    computed:{
+        dataList(){
+            let arr=[]
+            const List=[
                 {
                     imgUrl:'./img/con3-img.jpg',
                     iconUrl:'./img/con3-icon1.png',
@@ -429,11 +523,18 @@ Vue.component('myBook',{
                     number:'NO********'
                 }
             ]
+            for(let i=0;i<300;i++){
+                arr.push(List[i%4])
+            }
+            return arr
         }
+    },
+    mounted(){
+        this.$emit('getBookLength',this.dataList.length)
     },
     template:`
     <div class="book">
-        <div class="item" v-for="(item,index) of this.dataList" :key="index">
+        <div class="item" v-for="(item,index) of this.dataList.slice((this.pageIndex*9),(this.pageIndex+1)*9)" :key="index">
             <div class="item-img">
                 <img :src="item.imgUrl" alt="">
             </div>
@@ -451,7 +552,11 @@ Vue.component('myNft',{
     data(){
         return{
             overlayIsShow:false,
-            choose:1
+            choose:1,
+            heroLength:0,
+            heroIndex:0,
+            bookLength:0,
+            bookIndex:0
         }
     },
     methods:{
@@ -471,6 +576,18 @@ Vue.component('myNft',{
         },
         clickBook(){
             this.choose=2
+        },
+        getHeroLength(length){
+            this.heroLength=length
+        },
+        getBookLength(length){
+            this.bookLength=length
+        },
+        changeHeroIndex(index){
+            this.heroIndex=index
+        },
+        changeBookIndex(index){
+            this.bookIndex=index
         }
     },
     template: `
@@ -498,9 +615,12 @@ Vue.component('myNft',{
                 <div class="option" :class="{'active':this.choose===1}" @click="clickHero">Hero</div>
                 <div class="option" :class="{'active':this.choose===2}" @click="clickBook">Summoner’s book</div>
             </div>
-            <my-hero v-if="this.choose===1"></my-hero>
-            <my-book v-if="this.choose===2"></my-book>
+            <my-hero v-if="this.choose===1" @getHeroLength="getHeroLength" :pageIndex="heroIndex"></my-hero>
+            <my-book v-if="this.choose===2" @getBookLength="getBookLength" :pageIndex="bookIndex"></my-book>
         </div>
+        <el-pagination v-if="this.choose===1" :contentList='this.heroLength' :pageIndex="heroIndex" @changePageIndex="changeHeroIndex" :key="1"></el-pagination>
+        <el-pagination v-if="this.choose===2" :contentList='this.bookLength' :pageIndex="bookIndex" @changePageIndex="changeBookIndex" :key="2"></el-pagination>
+
     </div>
     `
 })
@@ -539,7 +659,7 @@ const app=new Vue({
             <img src="./img/BG.jpg" alt="">
         </div>
         <div class="topbar">
-            <div class="left">
+            <div class="left" @click="clickBack">
                 <img src="./img/SUMMON.svg" alt="" v-if="this.whichComponent===1">
                 <img src="./img/REVEAL.svg" alt="" v-else>
             </div>
