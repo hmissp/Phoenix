@@ -1,5 +1,7 @@
 const viewWidth=document.documentElement.clientWidth || window.innerWidth
 
+
+
 Vue.component('con1',{
     data(){
         return{
@@ -143,6 +145,8 @@ Vue.component('con2',{
     `
 })
 
+let mySwiper
+
 Vue.component('con3',{
     data(){
         return{
@@ -157,6 +161,7 @@ Vue.component('con3',{
                 './img/con1-item2.jpg',
                 './img/con1-item3.jpg',
             ],
+            swiperActive:0,
             pageIndex:0,
             overlayIsShow:false,
             ani1IsShow:false,
@@ -210,27 +215,36 @@ Vue.component('con3',{
     },
     methods:{
         swiperPrev(){
-            mySwiper.slidePrev()
-            const itemWidth=viewWidth*11.041667
-            const activeIndex=mySwiper.activeIndex
-            this.$refs.swiperWrapper.style.transform=`translate3d(0,0,0) !important`
-            if(activeIndex > 4){
-                this.$refs.swiperWrapper.style.transform=`translate3d(${itemWidth*(activeIndex-4)}px,0,0) !important`
-            }
-            if((mySwiper.slides.length-activeIndex) < 4){
-                this.$refs.swiperWrapper.style.transform=`translate3d(${itemWidth*((mySwiper.slides.length-activeIndex)-4)}px,0,0) !important` 
+            // mySwiper.slidePrev()
+            // const itemWidth=viewWidth*11.041667
+            // const activeIndex=mySwiper.activeIndex
+            // this.$refs.swiperWrapper.style.transform=`translate3d(0,0,0) !important`
+            // if(activeIndex > 4){
+            //     this.$refs.swiperWrapper.style.transform=`translate3d(${itemWidth*(activeIndex-4)}px,0,0) !important`
+            // }
+            // if((mySwiper.slides.length-activeIndex) < 4){
+            //     this.$refs.swiperWrapper.style.transform=`translate3d(${itemWidth*((mySwiper.slides.length-activeIndex)-4)}px,0,0) !important` 
+            // }
+            const slides=this.$refs.swiperWrapper.children.length
+            if(this.swiperActive>0){
+                this.swiperActive--
             }
         },
         swiperNext(){
-            mySwiper.slideNext()
-            const itemWidth=viewWidth*11.041667
-            const activeIndex=mySwiper.activeIndex
-            this.$refs.swiperWrapper.style.transform=`translate3d(0,0,0) !important`
-            if(activeIndex > 4){
-                this.$refs.swiperWrapper.style.transform=`translate3d(${itemWidth*(activeIndex-4)}px,0,0) !important`
-            }
-            if((mySwiper.slides.length-activeIndex) < 4){
-                this.$refs.swiperWrapper.style.transform=`translate3d(${itemWidth*((mySwiper.slides.length-activeIndex)-4)}px,0,0) !important` 
+            // mySwiper.slideNext()
+            // const itemWidth=viewWidth*11.041667
+            // const activeIndex=mySwiper.activeIndex
+            // this.$refs.swiperWrapper.style.transform=`translate3d(0,0,0) !important`
+            // this.$refs.swiperWrapper.style.color='red'
+            // if(activeIndex > 4){
+            //     this.$refs.swiperWrapper.style.transform=`translate3d(${itemWidth*(activeIndex-4)}px,0,0) !important`
+            // }
+            // if((mySwiper.slides.length-activeIndex) < 4){
+            //     this.$refs.swiperWrapper.style.transform=`translate3d(${itemWidth*((mySwiper.slides.length-activeIndex)-4)}px,0,0) !important` 
+            // }
+            const slides=this.$refs.swiperWrapper.children.length
+            if(this.swiperActive<slides-1){
+                this.swiperActive++
             }
         },
         clickPaginationItem(index){
@@ -266,13 +280,31 @@ Vue.component('con3',{
         },
         clickBack(){
             this.$emit('clickBack')
+        },
+        initSwiper(){
+            mySwiper = new Swiper('.swiper-container', {
+                freeMode:true,
+                on: {
+                    slideChangeTransitionEnd: function(){
+                      alert(this.activeIndex);
+                    },
+                  },
+            })
         }
+    },
+    mounted(){
+        // this.initSwiper()
+        this.$refs.swiperWrapper.querySelector('.swiper-slide-active').scrollIntoView({
+            behavior: 'smooth',
+            inline: 'center'
+        })
+        
     },
     template: `
     <div class="con3">
-        <div class="swiper-container">
+        <div class="swiper-container" ref="swiper">
             <div class="swiper-wrapper" ref="swiperWrapper">
-                <div class="swiper-slide" v-for="(item,index) of this.swiperImgs" :key=""index>
+                <div class="swiper-slide" :class="{'swiper-slide-active':swiperActive===index}" v-for="(item,index) of this.swiperImgs" :key="index">
                     <img :src="item" alt="">
                 </div>
             </div>
@@ -555,11 +587,5 @@ const app=new Vue({
 }).$mount('#app')
 
 
-var mySwiper = new Swiper('.swiper-container', {
-    freeMode:true,
-    navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-    },
-})
+
 

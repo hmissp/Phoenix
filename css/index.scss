@@ -294,6 +294,8 @@ body{
         z-index: 3;
         .swiper-container{
             margin-top: 3.072917vw;
+            overflow: scroll;
+            overflow-y: hidden;
             .swiper-wrapper{
                 justify-content: center;
                 align-items: center;
@@ -320,6 +322,9 @@ body{
                     width: 0.9375vw;
                 }
             }
+            
+        }
+        .swiper-container::-webkit-scrollbar{
         }
         .con3-content{
             width: 78.125vw;

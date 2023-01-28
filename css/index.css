@@ -342,6 +342,8 @@ body {
 
 .wrapper .con3 .swiper-container {
   margin-top: 3.072917vw;
+  overflow: scroll;
+  overflow-y: hidden;
 }
 
 .wrapper .con3 .swiper-container .swiper-wrapper {
