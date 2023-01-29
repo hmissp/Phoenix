@@ -463,10 +463,10 @@ body{
                     }
                 }
                 .item.in .item-img img{
-                    animation: item-in 1 .25s forwards linear ;
+                    animation: item-in 1 .25s forwards  ;
                 }
                 .item.out .item-img img{
-                    animation: item-out 1 .25s forwards linear ;
+                    animation: item-out 1 .3s forwards  ;
 
                 }
                 @keyframes item-in {
