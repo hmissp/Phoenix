@@ -34,17 +34,17 @@ Vue.component('con1',{
         }
     },
     methods:{
-        clickItem(item){
-            localStorage.setItem('item',JSON.stringify(item))
-            this.$emit('clickItem',item)
-        }
+        // clickItem(item){
+        //     localStorage.setItem('item',JSON.stringify(item))
+        //     this.$emit('clickItem',item)
+        // }
     },
     template:`
     <div class="con1">
         <div class="part1">
             <div class="title">Collaboration</div>
             <div class="activity-list">
-                <div class="item" v-for="(item,index) of this.con1Date" :key="index" @click="clickItem(item)">
+                <div class="item" v-for="(item,index) of this.con1Date" :key="index">
                     <div class="item-img">
                         <img :src="item.img" alt="">
                     </div>
@@ -79,7 +79,7 @@ Vue.component('con2',{
                 },
             ],
             overlayIsShow:false,
-            itemDate:JSON.parse(localStorage.getItem('item'))
+            // itemDate:JSON.parse(localStorage.getItem('item'))
         }
     },
     methods:{
@@ -94,9 +94,7 @@ Vue.component('con2',{
             this.overlayIsShow=false
             document.querySelector('body').classList.remove('hidden')
         },
-        con3Show(){
-            this.$emit('con3Show')
-        }
+        
     },
     template:`
     <div class="con2">
@@ -120,17 +118,17 @@ Vue.component('con2',{
         </div>
         <div class="banner">
             <div class="banner-bg">
-                <img :src="itemDate.img" alt="">
+                <img src="./img/con1-item1.jpg" alt="">
             </div>
             <div class="text">
                 <span>コラボタイトル</span>
-                <span>{{itemDate.text}}</span>
+                <span>期限：2022/12/26 17:00-2022/12/26 17:00</span>
             </div>
         </div>
         <div class="content">
             <div class="content-title">Collaboration</div>
             <div class="content-list">
-                <div class="item" v-for="(item,index) of this.imgList" :key="index" @click="con3Show">
+                <div class="item" v-for="(item,index) of this.imgList" :key="index" >
                     <img :src="item.imgUrl" alt="">
                 </div>
                 
@@ -225,11 +223,14 @@ Vue.component('con3',{
             const slides=this.$refs.swiperWrapper.children.length
             if(this.swiperActive>0){
                 this.swiperActive--
-                this.$refs.swiperWrapper.querySelector('.swiper-slide-active').scrollIntoView({
-                    behavior: 'smooth',
-                    inline: 'center',
-                    block:'nearest'
+                this.$nextTick(()=>{
+                    this.$refs.swiperWrapper.querySelector('.swiper-slide-active').scrollIntoView({
+                        behavior: 'smooth',
+                        inline: 'center',
+                        block:'nearest'
+                    })
                 })
+                
             }
         },
         swiperNext(){
@@ -247,11 +248,14 @@ Vue.component('con3',{
             const slides=this.$refs.swiperWrapper.children.length
             if(this.swiperActive<slides-1){
                 this.swiperActive++
-                this.$refs.swiperWrapper.querySelector('.swiper-slide-active').scrollIntoView({
-                    behavior: 'smooth',
-                    inline: 'center',
-                    block:'nearest'
+                this.$nextTick(()=>{
+                    this.$refs.swiperWrapper.querySelector('.swiper-slide-active').scrollIntoView({
+                        behavior: 'smooth',
+                        inline: 'center',
+                        block:'nearest'
+                    })
                 })
+                
             }
         },
         
@@ -635,7 +639,7 @@ const app=new Vue({
     },
     methods:{
         clickItem(item){
-            this.bannerDate=item
+            // this.bannerDate=item
             this.whichComponent=2
             document.documentElement.scrollTop=0
         },
@@ -644,11 +648,12 @@ const app=new Vue({
             document.documentElement.scrollTop=0
         },
         
-        con3Show(){
+       
+        clickMyNft(){
             this.whichComponent=3
             document.documentElement.scrollTop=0
         },
-        clickMyNft(){
+        clickMy(){
             this.whichComponent=4
             document.documentElement.scrollTop=0
         }
@@ -667,14 +672,14 @@ const app=new Vue({
         </div>
         <div class="choose-list">
             <div class="item" @click="clickBack">Home</div>
-            <div class="item">Market</div>
+            <div class="item" @click="clickMy">Market</div>
             <div class="item" @click="clickMyNft">My NFT</div>
-            <div class="item">Reveal</div>
+            <div class="item" @click="clickItem">Reveal</div>
             <div class="item">White Paper</div>
             <div class="item">SNS</div>
         </div>
-        <con1 @clickItem="clickItem" v-if="this.whichComponent===1"></con1>
-        <con2 @back="clickBack" @con3Show="con3Show" v-if="this.whichComponent===2"></con2>
+        <con1 v-if="this.whichComponent===1"></con1>
+        <con2 @back="clickBack"  v-if="this.whichComponent===2"></con2>
         <con3 @clickBack="clickBack" v-if="this.whichComponent===3"></con3> 
         <my-nft @back="clickBack"  @clickBack="clickBack" v-if="this.whichComponent===4"></my-nft>
         <div class="bottom-content">

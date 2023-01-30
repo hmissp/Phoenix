@@ -70,8 +70,12 @@ body{
         position: relative;
         z-index: 2;
         .left{
-            width: 7.604167vw;
+            height: 2.083333vw;
             cursor: pointer;
+            img{
+                height: 100%;
+                width: auto;
+            }
         }
         .right{
             color: #fff;
@@ -374,6 +378,7 @@ body{
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);
+                cursor: pointer;
                 img{
                     width: 0.9375vw;
                 }
@@ -462,35 +467,35 @@ body{
                         font-size: 1.25vw;
                     }
                 }
-                .item.in .item-img img{
-                    animation: item-in 1 .25s forwards  ;
-                }
-                .item.out .item-img img{
-                    animation: item-out 1 .3s forwards  ;
+                // .item.in .item-img img{
+                //     animation: item-in 1 .25s forwards  ;
+                // }
+                // .item.out .item-img img{
+                //     animation: item-out 1 .3s forwards  ;
 
-                }
-                @keyframes item-in {
-                    0%{
-                        transform: scale(1);
-                    }
-                    85%{
-                        transform: scale(1.16);
-                    }
-                    100%{
-                        transform: scale(1.14);
-                    }
-                }
-                @keyframes item-out {
-                    0%{
-                        transform: scale(1.14);
-                    }
-                    85%{
-                        transform: scale(0.98);
-                    }
-                    100%{
-                        transform: scale(1);
-                    }
-                }
+                // }
+                // @keyframes item-in {
+                //     0%{
+                //         transform: scale(1);
+                //     }
+                //     85%{
+                //         transform: scale(1.16);
+                //     }
+                //     100%{
+                //         transform: scale(1.14);
+                //     }
+                // }
+                // @keyframes item-out {
+                //     0%{
+                //         transform: scale(1.14);
+                //     }
+                //     85%{
+                //         transform: scale(0.98);
+                //     }
+                //     100%{
+                //         transform: scale(1);
+                //     }
+                // }
             }
         }
         
@@ -620,7 +625,10 @@ body{
                 border-radius: 0.78125vw;
                 overflow: hidden;
                 word-break: break-all;
-                margin: 15.520833vw auto 0;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
                 .overlay-title{
                     font-size: 2.1875vw;
                     margin: 3.28125vw auto 0;
@@ -718,6 +726,7 @@ body{
                     box-shadow: 0 0.416667vw 0.416667vw rgba($color: #183255, $alpha: 0.5);
                     border-radius: 0.9375vw;
                     overflow: hidden;
+                    cursor: pointer;
                     .number{
                         color: #fff;
                         font-size: 1.302083vw;

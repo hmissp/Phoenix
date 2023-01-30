@@ -86,8 +86,13 @@ body {
 }
 
 .wrapper .topbar .left {
-  width: 7.604167vw;
+  height: 2.083333vw;
   cursor: pointer;
+}
+
+.wrapper .topbar .left img {
+  height: 100%;
+  width: auto;
 }
 
 .wrapper .topbar .right {
@@ -434,6 +439,7 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  cursor: pointer;
 }
 
 .wrapper .con3 .swiper-container .swiper-button-prev img, .wrapper .con3 .swiper-container .swiper-container-rtl .swiper-button-next img, .wrapper .con3 .swiper-container .swiper-button-next img, .wrapper .con3 .swiper-container .swiper-container-rtl .swiper-button-prev img {
@@ -536,38 +542,6 @@ body {
   background-color: #FF5A8C;
   margin: 0 auto 1.5625vw;
   font-size: 1.25vw;
-}
-
-.wrapper .con3 .con3-content .con3-list .item.in .item-img img {
-  animation: item-in 1 .25s forwards;
-}
-
-.wrapper .con3 .con3-content .con3-list .item.out .item-img img {
-  animation: item-out 1 .3s forwards;
-}
-
-@keyframes item-in {
-  0% {
-    transform: scale(1);
-  }
-  85% {
-    transform: scale(1.16);
-  }
-  100% {
-    transform: scale(1.14);
-  }
-}
-
-@keyframes item-out {
-  0% {
-    transform: scale(1.14);
-  }
-  85% {
-    transform: scale(0.98);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 .wrapper .con3 .con3-overlay {
@@ -711,7 +685,10 @@ body {
   border-radius: 0.78125vw;
   overflow: hidden;
   word-break: break-all;
-  margin: 15.520833vw auto 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .wrapper .my .overlay .remind .overlay-title {
@@ -824,6 +801,7 @@ body {
   box-shadow: 0 0.41667vw 0.41667vw rgba(24, 50, 85, 0.5);
   border-radius: 0.9375vw;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .wrapper .my .my-content .hero .item .number {
